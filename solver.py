@@ -4,6 +4,8 @@ def solve_puzzle(grid, shapes, shape_counts):
     least_universal_shape_count = float('inf')
 
     def can_place_shape(grid, shape, x, y):
+        if x is None or y is None:
+            return False
         rows, cols = len(grid), len(grid[0])
         for i in range(len(shape)):
             for j in range(len(shape[0])):
@@ -51,20 +53,24 @@ def solve_puzzle(grid, shapes, shape_counts):
             best_solution = [row[:] for row in solution]
             least_universal_shape_count = universal_shape_count
             return
+        
+        if universal_shape_count >= least_universal_shape_count:
+            return
 
-        for shape_num in range(1, 9):
+        for shape_index in range(1, 10):
+            shape_num = shape_index - 1
             for angle in [0, 90, 180, 270]:
-                rotated_shape = rotate_shape(shapes[shape_num], angle)
-                if used_shape_counts[shape_num] < shape_counts[shape_num] and can_place_shape(solution, rotated_shape, x, y):
-                    place_shape(solution, rotated_shape, x, y, shape_num)
-                    used_shape_counts[shape_num] += 1
+                rotated_shape = rotate_shape(shapes[shape_index], angle)
+                if used_shape_counts[shape_index] < shape_counts[shape_num] and can_place_shape(solution, rotated_shape, x, y):
+                    place_shape(solution, rotated_shape, x, y, shape_index)
+                    used_shape_counts[shape_index] += 1
                     newX, newY = find_next_empty_position(solution, x, y)
-                    if shape_num == 9:
+                    if shape_index == 9:
                         backtrack(newX, newY, universal_shape_count + 1, used_shape_counts)
                     else:
                         backtrack(newX, newY, universal_shape_count, used_shape_counts)
                     remove_shape(solution, rotated_shape, x, y)
-                    used_shape_counts[shape_num] -= 1
+                    used_shape_counts[shape_index] -= 1
         return
 
     used_shape_counts = {i: 0 for i in range(1, 10)}
@@ -73,6 +79,7 @@ def solve_puzzle(grid, shapes, shape_counts):
         return best_solution, least_universal_shape_count
     else:
         return "No solution found", 0
+
 
 # 这里是解决方案的调用方式
 grid = [
@@ -83,7 +90,7 @@ grid = [
     [0, 0, 0, 0, 0, 0]
 ]
 shape_counts = [10,10,10,10,10,10,10,10,10]
-shapes = {1: [[1, 1],
+shapes = {    1: [[1, 1],
                   [1, 1]], 
               2: [[1],
                   [1],
@@ -106,4 +113,6 @@ shapes = {1: [[1, 1],
                   [0, 1, 0]],
               9: [[1]]}
 solution, least_universal_shape_used = solve_puzzle(grid, shapes, shape_counts)
-print(solution, least_universal_shape_used)
+for row in solution:
+    print(row)
+print(least_universal_shape_used)
