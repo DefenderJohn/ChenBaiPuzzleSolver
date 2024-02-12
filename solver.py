@@ -89,7 +89,7 @@ grid = [
     [0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0]
 ]
-shape_counts = [10,10,10,10,10,10,10,10,10]
+shape_counts = [2,3,1,3,1,1,0,1,0]
 shapes = {    1: [[1, 1],
                   [1, 1]], 
               2: [[1],
@@ -113,6 +113,9 @@ shapes = {    1: [[1, 1],
                   [0, 1, 0]],
               9: [[1]]}
 solution, least_universal_shape_used = solve_puzzle(grid, shapes, shape_counts)
-for row in solution:
-    print(row)
+if "No solution" in solution:
+    print("方块不够")
+else:
+    for row in solution:
+        print(row)
 print(least_universal_shape_used)
